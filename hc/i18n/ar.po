@@ -1,0 +1,244 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * oh
+#
+# Translators:
+# Metwalli Mohsen <metwalli.MSN@Gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-01-26 17:07+0000\n"
+"Last-Translator: Metwalli Mohsen <metwalli.MSN@Gmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/odoo/odoo-8/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: hc
+#: code:addons/hc/hc.py:158
+#, python-format
+msgid "%s (copy)"
+msgstr "%s (نسخة)"
+
+#. module: hc
+#: view:hc.patient:hc.view_hc_patient_tree
+#: view:hc.patient:hc.view_hc_patient_form
+#: view:hc.patient:hc.view_hc_patient_search
+#: model:ir.actions.act_window,name:hc.act_open_hc_patient_view
+#: model:ir.ui.menu,name:hc.menu_hc_patient
+#: field:res.partner,patient_ids:0
+msgid "Patients"
+msgstr "المرضى"
+
+#. module: hc
+#: view:hc.patient:hc.view_hc_patient_form
+msgid "Patient"
+msgstr "مريض"
+
+#. module: hc
+#: view:hc.patient:hc_patient_kanban_view
+msgid "Gender:"
+msgstr ":الجنس:"
+
+#. module: hc
+#: view:hc.patient:hc_patient_kanban_view
+msgid "UHID:"
+msgstr ":الرقم الطبي:"
+
+#. module: hc
+#: view:hc.patient:hc.view_hc_patient_search
+msgid "Group By"
+msgstr "تجميع بحسب"
+
+#. module: hc
+#: view:hc.patient:view_hc_patient_search
+msgid "Name"
+msgstr "الإسم"
+
+#. module: hc
+#: view:hc.patient:view_hc_patient_search
+msgid "Address"
+msgstr "العنوان"
+
+#. module: hc
+#: view:hc.patient:view_hc_patient_search
+msgid "Date of Birth"
+msgstr "تأريخ الميلاد"
+
+#. module: hc
+#: view:hc.patient:view_hc_patient_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: hc
+#: view:hc.patient:hc.view_hc_patient_form
+msgid "Public Information"
+msgstr "معلومات عامة"
+
+#. module: hc
+#: field:hc.patient,photo:0
+msgid "Picture"
+msgstr "صورة"
+
+#. module: hc
+#: field:hc.patient,firt_name:0
+msgid "First Name"
+msgstr "الإسم الأول"
+
+#. module: hc
+#: field:hc.patient,middle_name:0
+msgid "Middle Name"
+msgstr "إسم الأب"
+
+#. module: hc
+#: field:hc.patient,last_name:0
+msgid "Last Name"
+msgstr "الإسم الأخير"
+
+#. module: hc
+#: field:hc.patient,gender:0
+msgid "Gender"
+msgstr "الجنس"
+
+#. module: hc
+#: selection:hc.patient,gender:0
+msgid "Male"
+msgstr "ذكر"
+
+#. module: hc
+#: selection:hc.patient,gender:0
+msgid "Female"
+msgstr "أنثى"
+
+#. module: hc
+#: selection:hc.patient,gender:0
+msgid "Unknown"
+msgstr "غير معروف"
+
+#. module: hc
+#: field:hc.patient,blood_type:0
+msgid "Blood Type"
+msgstr "فصيلة الدم"
+
+#. module: hc
+#: field:hc.patient,general_info:0
+msgid "General Information"
+msgstr "معلومات عامة"
+
+#. module: hc
+#: help:hc.patient,general_info:0
+msgid "General information about the patient"
+msgstr "معلومات عامة عن المريض"
+
+#. module: hc
+#: field:hc.patient,allergies:0
+msgid "Allergies"
+msgstr "الحساسية"
+
+#. module: hc
+#: help:hc.patient,allergies:0
+msgid "Write any important information on the patient\'s disease, surgeries, allergies, ..."
+msgstr "اكتب أي معلومات "
+
+#. module: hc
+#: field:hc.patient,current_address:0
+msgid "Address"
+msgstr "العنوان"
+
+#. module: hc
+#: field:hc.patient,state:0
+msgid "Patient State"
+msgstr "الحالة"
+
+#. module: hc
+#: selection:hc.patient,state:0
+msgid "Out Patient"
+msgstr "مريض عيادات"
+
+#. module: hc
+#: selection:hc.patient,state:0
+msgid "In Patient"
+msgstr "مريض رقود"
+
+#. module: hc
+#: selection:hc.patient,state:0
+msgid "Blocked"
+msgstr "مقفل"
+
+#. module: hc
+#: selection:hc.patient,state:0
+msgid "Deceased"
+msgstr "متوفي"
+
+#. module: hc
+#: field:hc.patient,ssn:0
+msgid "SSN"
+msgstr "الرقم الوطني"
+
+#. module: hc
+#: field:hc.patient,dob:0
+msgid "Date of Birth"
+msgstr "تأريخ الميلاد"
+
+#. module: hc
+#: field:hc.patient,age:0
+msgid "Age"
+msgstr "العمر"
+
+#. module: hc
+#: field:hc.patient,patient_type:0
+msgid "Patient Type"
+msgstr "نوع المريض"
+
+#. module: hc
+#: field:hc.patient,marital_status:0
+msgid "Marital Status"
+msgstr "الحالة الاجتماعية"
+
+#. module: hc
+#: selection:hc.patient,marital_status:0
+msgid "Single"
+msgstr "أعزب"
+
+#. module: hc
+#: selection:hc.patient,marital_status:0
+msgid "Married"
+msgstr "متزوج"
+
+#. module: hc
+#: selection:hc.patient,marital_status:0
+msgid "Widowed"
+msgstr "أرمل"
+
+#. module: hc
+#: selection:hc.patient,marital_status:0
+msgid "Divorced"
+msgstr "مطلق"
+
+#. module: hc
+#: selection:hc.patient,marital_status:0
+msgid "Unknown"
+msgstr "غير معروف"
+
+#. module: hc
+#: field:hc.patient,dod:0
+msgid "Date of Death"
+msgstr "تأريخ الوفاة"
+
+#. module: hc
+#: field:hc.patient,uhid:0
+msgid "UHID"
+msgstr "الرقم الطبي"
+
+#. module: hc
+#: help:hc.patient,uhid:0
+msgid "Patient Identifier provided by the Healthcare Center"
+msgstr "الرقم الطبي الخاص بالمريض"
+
+#. module: hc
+#: help:hc.patient,current_address:0
+msgid "Contact information."
+msgstr "معلومات التواصل."

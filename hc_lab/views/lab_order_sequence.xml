@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for sale.order -->
+        <record id="seq_hc_lab_test_order" model="ir.sequence">
+            <field name="name">Test Order</field>
+            <field name="code">hc.lab.test.order</field>
+            <field name="prefix">LAB.</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

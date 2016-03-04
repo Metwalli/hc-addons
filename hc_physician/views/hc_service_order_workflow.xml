@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        <record id="wkf_hc_physician_consultation_order" model="workflow">
+            <field name="name">hc.physician.consultation.order.basic</field>
+            <field name="osv">hc.physician.consultation.order</field>
+            <field name="on_create">True</field>
+        </record>
+        -->
+
+        <!-- service order workflow -->
+        <record id="hc.act_consultation_order" model="workflow.activity">
+            <field name="wkf_id" ref="hc.wkf_hc_service_order"/>
+            <field name="name">consultation_order</field>
+            <field name="kind">function</field>
+            <field name="action">action_create_consultation_order()</field>
+        </record>
+        <record id="hc.trans_router_consultation_order" model="workflow.transition">
+            <field name="act_from" ref="hc.act_router"/>
+            <field name="act_to" ref="hc.act_consultation_order"/>
+            <field name="condition">_check_contains_physician_consultation()</field>
+        </record>
+
+    </data>
+</openerp>

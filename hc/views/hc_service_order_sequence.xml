@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for HealthCare Service Order -->
+
+        <record id="hc_service_order_seq" model="ir.sequence">
+            <field name="name">HealthCare Service Order</field>
+            <field name="code">hc.service.order</field>
+            <field name="prefix">HSO.</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

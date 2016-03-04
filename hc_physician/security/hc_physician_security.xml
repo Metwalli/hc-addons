@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record id="base.group_hc_physician_doctor" model="res.groups">
+        <field name="name">Doctors</field>
+        <field name="category_id" ref="base.module_category_healthcare"/>
+        <field name="comment">the user will have access to his own consultation orders in the Physician application.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="base.group_hc_physician_all_doctor" model="res.groups">
+        <field name="name">See all Consultations Orders</field>
+        <field name="category_id" ref="base.module_category_healthcare"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_hc_physician_doctor'))]"/>
+        <field name="comment">the user will have access to all consultation orders in the physician application.</field>
+    </record>
+
+</data>
+<data noupdate="1">
+    <!-- Multi - Company Rules
+
+    <record model="ir.rule" id="hc_physician_consultation_order_comp_rule">
+        <field name="name">Consultation Order multi-company</field>
+        <field name="model_id" ref="model_hc_physician_consultation_order"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+-->
+
+    <!-- Multi - consultation order assignment rules -->
+
+    <record id="hc_physician_consultation_order_doctor_rule" model="ir.rule">
+        <field name="name">Own Consultation Orders</field>
+        <field name="model_id" ref="model_hc_physician_consultation_order" />
+        <field name="domain_force">[('doctor_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_hc_physician_doctor'))]"/>
+    </record>
+
+    <record id="hc_physician_consultation_order_see_all" model="ir.rule">
+        <field name="name">All Consultation Orders</field>
+        <field name="model_id" ref="model_hc_physician_consultation_order" />
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_hc_physician_all_doctor'))]"/>
+    </record>
+
+</data>
+</openerp>

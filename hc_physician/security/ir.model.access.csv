@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_consultation_order,hc.physician.consultation.order,model_hc_physician_consultation_order,base.group_hc_physician_doctor,1,1,0,0
+access_service_order_doctor,hc.service.order doctor,hc.model_hc_service_order,base.group_hc_physician_doctor,1,1,1,1
+access_service_order_line_doctor,hc.service.order.line doctor,hc.model_hc_service_order_line,base.group_hc_physician_doctor,1,1,1,1
+access_physician_case_sheet,hc.physician.case_sheet,model_hc_physician_case_sheet,base.group_hc_physician_doctor,1,1,1,0
+access_diagnosis,hc.diagnosis,model_hc_diagnosis,base.group_hc_physician_doctor,1,1,1,0

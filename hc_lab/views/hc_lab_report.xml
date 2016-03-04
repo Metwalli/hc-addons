@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+          <report
+            id="report_lab_test_order_results"
+            model="hc.lab.test.order"
+            string="Results Report"
+            report_type="qweb-pdf"
+            name="hc_lab.report_lab_test_order_results2"
+            file="hc_lab.report_lab_test_order_results"
+        />
+    </data>
+</openerp>

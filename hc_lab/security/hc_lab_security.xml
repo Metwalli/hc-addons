@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record id="base.group_hc_lab_tech" model="res.groups">
+        <field name="name">Laboratory Technician</field>
+        <field name="category_id" ref="base.module_category_healthcare"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">the user will have access to Laboratory Application</field>
+    </record>
+    <record id="base.group_hc_lab_admin" model="res.groups">
+        <field name="name">Laboratory Admin</field>
+        <field name="category_id" ref="base.module_category_healthcare"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_hc_lab_tech'))]"/>
+        <field name="comment">the user will have access to all in the Laboratory App</field>
+    </record>
+
+</data>
+</openerp>

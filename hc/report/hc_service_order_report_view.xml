@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_oh_service_order_graph" model="ir.ui.view">
+         <field name="name">oh.service.order.report.graph</field>
+         <field name="model">oh.service.order.report</field>
+         <field name="arch" type="xml">
+             <graph string="Service Orders Analysis" type="pivot" stacked="True">
+                 <field name="service_type" type="row"/>
+                 <field name="order_date" interval="month" type="col"/>
+                 <field name="count_all" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <record id="filter_oh_service_order_report_state" model="ir.filters">
+        <field name="name">Service Funnel</field>
+        <field name="model_id">oh.service.order.report</field>
+        <field name="domain">['&amp;', ('order_date','&lt;=', time.strftime('%%Y-12-31')), '&amp;', ('order_date','&gt;=',time.strftime('%%Y-01-01')), ('state','not in',('cancel',))]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['patient_id'], 'measures': ['count_all']}</field>
+    </record>
+    <record id="filter_oh_service_order_report_doctor" model="ir.filters">
+        <field name="name">By Doctor</field>
+        <field name="model_id">oh.service.order.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['order_date:month', 'doctor_id']}</field>
+    </record>
+    <record id="filter_oh_service_order_report_patient" model="ir.filters">
+        <field name="name">By Patient</field>
+        <field name="model_id">oh.service.order.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['order_date:month', 'patient_id']}</field>
+    </record>
+    <record id="filter_oh_service_order_report_service_type" model="ir.filters">
+        <field name="name">By Service Type</field>
+        <field name="model_id">oh.service.order.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['order_date:month', 'service_type']}</field>
+    </record>
+    <record id="filter_oh_service_order_report_product" model="ir.filters">
+        <field name="name">By Product</field>
+        <field name="model_id">oh.service.order.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['order_date:month', 'product_id']}</field>
+    </record>
+
+    <record id="view_oh_service_order_report_search" model="ir.ui.view">
+        <field name="name">oh.service.order.report.search</field>
+        <field name="model">oh.service.order.report</field>
+        <field name="arch" type="xml">
+            <search string="HealthCare Service Analysis">
+                <field name="order_date"/>
+                <filter string="This Year" name="year" invisible="1" domain="[('order_date','&lt;=', time.strftime('%%Y-12-31')),('order_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <filter name="Services" string="Services" domain="[('state','not in',('draft', 'cancel'))]"/>
+                <separator/>
+                <filter string="My Orders" help="My Orders" domain="[('user_id','=',uid)]"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="User" name="User" context="{'group_by':'user_id'}"/>
+                    <filter string="Patient" name="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter string="Doctor" name="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Service Type" name="Service Type" context="{'group_by':'service_type'}"/>
+                    <filter string="Products" name="Product" context="{'group_by':'product_id'}"/>
+                    <filter string="Status" context="{'group_by':'state'}"/>
+                    <separator/>
+                    <filter string="Order Month" context="{'group_by':'order_date:month'}" help="Ordered date of the Service order"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_oh_service_order_report_all" model="ir.actions.act_window">
+        <field name="name">HealthCare Service Order Analysis</field>
+        <field name="res_model">oh.service.order.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="search_view_id" ref="view_oh_service_order_report_search"/>
+        <field name="view_id" ref="view_oh_service_order_graph"/>
+        <field name="context">{'search_default_Services':1, 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+    <menuitem id="base.healthcare_reporting" name="HealthCare" parent="base.menu_reporting" sequence="1" groups="base.group_oh_admin"/>
+    <menuitem action="action_oh_service_order_report_all" id="menu_oh_service_order_report_all" parent="base.healthcare_reporting" sequence="1"/>
+
+</data>
+</openerp>

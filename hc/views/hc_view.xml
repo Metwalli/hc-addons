@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+        <menuitem name="HC HealthCare" id="menu_hc_root" sequence="150"/>
+        <menuitem name="Configuration" parent="menu_hc_root" id="menu_hc_config_root" sequence="120"/>
+		<menuitem name="Front Office" parent="menu_hc_root" id="menu_hc_front_office_root" sequence="10"/>
+
+        <record id="view_hr_employee_is_doctor_form" model="ir.ui.view">
+            <field name="name">hr.employee.is_doctor.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="is_doctor"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_hc_consultation_visiting_plan_tree" model="ir.ui.view">
+            <field name="name">hc.consultation.visiting.plan.tree</field>
+            <field name="model">hc.consultation.visiting.plan</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree string="Visiting Plan">
+                    <field name="name"/>
+                    <field name="sequence_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_hc_consultation_visiting_plan_form" model="ir.ui.view">
+            <field name="name">hc.consultation.visiting.plan.form</field>
+            <field name="model">hc.consultation.visiting.plan</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <form string="Visiting Plan">
+                    <label for="name" string="Description"/><field name="name"/>
+                    <field name="sequence_ids">
+                        <tree string="Plan Sequence" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="no_of_days"/>
+                            <field name="discount"/>
+                            <field name="note"/>
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hc_consultation_tree" model="ir.ui.view">
+            <field name="name">hc.consultation.tree</field>
+            <field name="model">hc.consultation</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree string="Consultation">
+                    <field name="employee_id"/>
+                    <field name="product_id"/>
+                    <field name="plan_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_hc_consultation_form" model="ir.ui.view">
+            <field name="name">hc.consultation.form</field>
+            <field name="model">hc.consultation</field>
+            <field name="arch" type="xml">
+                <form string="Consultation Defenation">
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="product_id"/>
+                        <field name="doctor_id"/>
+                    </group>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="plan_id"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hc_consultation_visiting_plan" model="ir.actions.act_window">
+            <field name="name">Consultation Plan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hc.consultation.visiting.plan</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_hc_consultation_visiting_plan_tree"/>
+        </record>
+
+        <record id="action_consultation" model="ir.actions.act_window">
+            <field name="name">Define Consultation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hc.consultation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_hc_consultation_tree"/>
+        </record>
+
+        <menuitem action="action_hc_consultation_visiting_plan" id="menu_hc_consultation_visiting_plan" name="Visiting Plan" parent="menu_hc_config_root" sequence="3"/>
+        <menuitem action="action_consultation" id="menu_consultation" name="Consultation" parent="menu_hc_config_root" sequence="4"/>
+
+        <record id="view_hc_product_form" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="8" />
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='type']" position="after">
+                     <field name="service_type" attrs="{'invisible':[('type', '!=', 'service')]}"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="product_hc_service_action" model="ir.actions.act_window">
+            <field name="name">Services Definition</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product.product_kanban_view"/>
+            <field name="context">{'default_type':'service'}</field>
+            <field name="domain">[('type', '=', 'service'),('service_type', '!=', False)]</field>
+        </record>
+
+        <menuitem action="product.product_category_action_form" id="menu_product_category" name="Service Category" parent="menu_hc_config_root" sequence="1"/>
+        <menuitem action="product_hc_service_action" id="menu_product_service" parent="menu_hc_config_root" sequence="2"/>
+
+ 	</data>
+</openerp>

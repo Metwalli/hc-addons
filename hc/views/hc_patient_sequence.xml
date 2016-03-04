@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for sale.order -->
+
+        <record id="seq_service_order" model="ir.sequence">
+            <field name="name">Patient UHID</field>
+            <field name="code">hc.patient</field>
+            <field name="prefix">TPH</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hc_patient_kanban_view">
+            <field name="name">hc.patient.kanban</field>
+            <field name="model">hc.patient</field>
+            <field name="priority" eval="6"/>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="photo" />
+                    <field name="name"/>
+                    <field name="gender"/>
+                    <field name="uhid" />
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('hc.patient', 'photo', record.id.value)"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong><field name="name"/></strong>
+                                    <ul>
+                                        <li>UHID: <field name="uhid"/></li>
+                                        <li>Gender: <field name="gender"/></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_hc_patient_tree" model="ir.ui.view">
+			<field name="name">hc.patient.tree</field>
+			<field name="model">hc.patient</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Patients">
+					<field name="name" />
+					<field name="ssn" />
+					<field name="uhid" />
+					<field name="dob" />
+					<field name="blood_type" />
+					<field name="gender" />
+                    <field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_hc_patient_form" model="ir.ui.view">
+			<field name="name">hc.patient.form</field>
+			<field name="model">hc.patient</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<form string="Patient" version="7.0">
+					<sheet>
+						<group col="2">
+                            <field name="photo" widget="image" class="oe_left oe_avatar" nolabel="1" width="10%"/>
+                            <div>
+                                <group col="3">
+                                    <label for="first_name"/>
+                                    <label for="middle_name"/>
+                                    <label for="last_name"/>
+                                    <field name="first_name" nolabel="1"/>
+                                    <field name="middle_name" nolabel="1"/>
+                                    <field name="last_name" nolabel="1"/>
+                                </group>
+						    </div>
+                        </group>
+                        <group col="4">
+                            <group>
+                                <div>
+                                    <group col="2">
+                                        <field name="gender"/>
+                                        <field name="ssn" />
+                                    </group>
+                                    <group col="3">
+                                        <field name="blood_type" />
+                                        <field name="rh" nolabel="1"/>
+                                    </group>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="uhid" />
+                                <field name="dob" />
+                                <field name="age" />
+                                <field name="state"/>
+                            </group>
+                        </group>
+						<notebook>
+							<page string="Public Information">
+								<group  col="4" colspan="4">
+									<field name="current_address" />
+									<field name="marital_status"/>
+									<field name="general_info" />
+									<field name="dod" attrs="{'invisible':[('state', 'not in', 'deceased')]}" />
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_hc_patient_search" model="ir.ui.view">
+			<field name="name">hc.patient.search</field>
+			<field name="model">hc.patient</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<search string="Patients">
+					<field name="name" />
+					<field name="current_address" />
+					<field name="dob" />
+					<field name="state" />
+                    <field name="uhid"/>
+					<group expand="0" string="Group By">
+						<filter string="Name" domain="[]" context="{'group_by':'name'}" />
+						<filter string="Address" domain="[]" context="{'group_by':'current_address'}" />
+						<filter string="Date of Birth" domain="[]" context="{'group_by':'dob'}" />
+                        <filter string="Status" domain="[]" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="act_open_hc_patient_view">
+			<field name="name">Patients</field>
+            <field name="type">ir.actions.act_window</field>
+			<field name="res_model">hc.patient</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,kanban,form</field>
+			<field name="view_id" ref="hc_patient_kanban_view"/>
+		</record>
+
+		<menuitem action="act_open_hc_patient_view" id="menu_hc_patient" parent="menu_hc_front_office_root" sequence="1"/>
+	</data>
+</openerp>

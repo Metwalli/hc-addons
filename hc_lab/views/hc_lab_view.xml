@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+        <!-- Test Configuration -->
+
+
+        <record id="product_lab_test_view_tree" model="ir.ui.view">
+            <field name="name">product.product.lab_test.tree</field>
+            <field name="model">product.product</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Laboratory Tests">
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <field name="attribute_value_ids" widget="many2many_tags"/>
+                    <field name="lst_price"/>
+                    <field name="uom_id"/>
+                    <field name="state" invisible="1"/>
+                    <field name="product_tmpl_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="product_lab_test_view_form" model="ir.ui.view">
+            <field name="name">product.product.lab_test.form</field>
+            <field name= "model">product.product</field>
+            <field name= "priority" eval="8" />
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <form position="attributes">
+                    <attribute name="string">Test Definition</attribute>
+                </form>
+            </field>
+        </record>
+
+        <record id="hc_lab_test_view_tree" model="ir.ui.view">
+            <field name="name">hc.lab.lab_test.form</field>
+            <field name= "model">hc.lab.test</field>
+            <field name= "priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="code"/>
+                    <field name="category_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="hc_lab_test_view_form" model="ir.ui.view">
+            <field name="name">hc.lab.lab_test.form</field>
+            <field name= "model">hc.lab.test</field>
+            <field name= "priority" eval="8" />
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id" context="{'default_type': 'service', 'default_service_type': 'lab_test'}"/>
+                                <field name="name"/>
+                                <field name="category_id"/>
+                            </group>
+                            <group>
+                                <field name="type"/>
+                                <field name="code"/>
+                                <field name="abbreviation"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Components">
+                                <field name="component_ids" attrs="{'invisible':[('type','=','culture')]}">
+                                    <tree string="Test Components" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" />
+                                        <field name="type" />
+                                        <field name="uom_id" attrs="{'invisible':[('type', '=', 'text')]}" />
+                                        <field name="normal_range_ids" invisible="[('type', '=', 'text')]"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Specimens">
+                                <field name="specimen_line_ids">
+                                    <tree string="Specimens" editable="bottom">
+                                        <field name="specimen_id"/>
+                                        <field name="qty" />
+                                        <field name="uom_id"/>
+                                        <field name="expiry"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Other Config">
+                                <group>
+                                    <group>
+                                        <field name="method_id"/>
+                                        <field name="perform_to"/>
+                                        <field name="separate_specimen"/>
+                                    </group>
+                                    <group col="3">
+                                        <field name="performed_time"/>
+                                        <field name="performed_time_unit" nolabel="1"/>
+                                        <field name="outsourcing"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+		<record id="hc_lab_test_component_view_tree" model="ir.ui.view">
+			<field name="name">hc.lab.test.component.tree</field>
+			<field name="model">hc.lab.test.component</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Test Components">
+					<field name="test_id" />
+                    <field name="sequence"/>
+					<field name="name" />
+                    <field name="type" />
+				</tree>
+			</field>
+		</record>
+		<record id="hc_lab_test_component_view_form" model="ir.ui.view">
+			<field name="name">hc.lab.test.component.form</field>
+			<field name="model">hc.lab.test.component</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+			 	<form string="Test Components" version="7.0">
+                        <group colspan="4">
+                            <group>
+                                <field name="test_id"/>
+                                <field name="name" />
+                            </group>
+                            <group>
+                                <field name="type" />
+                                <field name="uom_id" attrs="{'invisible':[('type', '=', 'text')]}" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Normal Ranges" attrs="{'invisible':[('type', '!=', 'num')]}">
+                                <field name="normal_range_ids">
+                                    <tree string="Test Normal Range" editable="bottom">
+                                        <field name="gender" />
+                                        <field name="age_from"/>
+                                        <field name="age_to"/>
+                                        <field name="age_unit"/>
+                                        <field name="low_value" />
+                                        <field name="high_value" />
+                                        <field name="unit"/>
+                                        <field name="range_desc"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Default Values" attrs="{'invisible':[('type', '!=', 'text')]}">
+                                <field name="default_value_ids" context="">
+                                    <tree string="Default Values" editable="bottom">
+                                        <field name="name" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                </form>
+			</field>
+		</record>
+
+		<record id="hc_lab_test_component_normal_range_view_tree" model="ir.ui.view">
+			<field name="name">hc.lab.test.component.normal_range.tree</field>
+			<field name="model">hc.lab.test.component.normal_range</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Normal Range" editable="bottom">
+					<field name="component_id" />
+					<field name="gender" />
+                    <field name="age_from"/>
+                    <field name="age_to"/>
+                    <field name="age_unit"/>
+					<field name="high_value" />
+					<field name="low_value" />
+                    <field name="unit"/>
+                    <field name="range_desc"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="hc_lab_test_component_default_values_view_tree" model="ir.ui.view">
+			<field name="name">hc.lab.test.component.default_values.tree</field>
+			<field name="model">hc.lab.test.component.default_values</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Default Values" editable="bottom">
+					<field name="component_id" />
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+        <record id="hc_lab_test_organism_view_tree" model="ir.ui.view">
+			<field name="name">hc.lab.test.organism.tree</field>
+			<field name="model">hc.lab.test.organism</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Micro Organism">
+					<field name="code" />
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+        <record id="hc_lab_test_antibiotic_view_tree" model="ir.ui.view">
+			<field name="name">hc.lab.test.antibiotic.tree</field>
+			<field name="model">hc.lab.test.antibiotic</field>
+			<field name="priority" eval="8" />
+			<field name="arch" type="xml">
+				<tree string="Antibiotics">
+					<field name="code" />
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+        <record id="hc_lab_test_antibiotic_sensitive_view_form" model="ir.ui.view">
+            <field name="name">hc.lab.test.antibiotic_sensitive.form</field>
+            <field name="model">hc.lab.test.antibiotic_sensitive</field>
+            <field name="arch" type="xml">
+                <form string="Antibiotic Sensitive Definition">
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_lab_test_action" model="ir.actions.act_window">
+            <field name="name">Test Definition</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product.product_kanban_view"/>
+            <field name="context">{'default_type':'service','default_service_type':'lab_test'}</field>
+            <field name="domain">[('type', '=', 'service'), ('service_type', '=', 'lab_test')]</field>
+        </record>
+        <record id="hc_lab_test_action" model="ir.actions.act_window">
+            <field name="name">Test Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hc.lab.test</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="hc_lab_test_view_tree"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+		<record model="ir.actions.act_window" id="act_open_hc_lab_test_component">
+			<field name="name">Test Components</field>
+			<field name="res_model">hc.lab.test.component</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hc_lab_test_component_view_tree"/>
+		</record>
+		<record model="ir.actions.act_window" id="act_open_hc_lab_test_component_normal_range">
+			<field name="name">Normal Range</field>
+			<field name="res_model">hc.lab.test.component.normal_range</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hc_lab_test_component_normal_range_view_tree"/>
+		</record>
+		<record model="ir.actions.act_window" id="act_open_hc_lab_test_component_default_values">
+			<field name="name">Default Values</field>
+			<field name="res_model">hc.lab.test.component.default_values</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hc_lab_test_component_default_values_view_tree"/>
+		</record>
+        <record model="ir.actions.act_window" id="act_open_hc_lab_test_organism">
+			<field name="name">Micro-Organism</field>
+			<field name="res_model">hc.lab.test.organism</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hc_lab_test_organism_view_tree"/>
+		</record>
+         <record model="ir.actions.act_window" id="act_open_hc_lab_test_antibiotic">
+			<field name="name">Antibiotic</field>
+			<field name="res_model">hc.lab.test.antibiotic</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hc_lab_test_antibiotic_view_tree"/>
+		</record>
+
+        <menuitem name="Laboratory Configuration" parent="hc.menu_hc_config_root" id="menu_hc_lab_config" sequence="20"/>
+        <menuitem action="product_lab_test_action" id="menu_product_test" parent="menu_hc_lab_config" sequence="2"/>
+        <menuitem action="hc_lab_test_action" id="menu_hc_lab_test" parent="menu_hc_lab_config" sequence="3"/>
+		<menuitem action="act_open_hc_lab_test_component" name="Test Components" id="menu_hc_lab_test_component" parent="menu_hc_lab_config" sequence="4"/>
+		<menuitem action="act_open_hc_lab_test_component_normal_range" name="Normal Range" id="menu_hc_lab_test_component_normal_range" parent="menu_hc_lab_config" sequence="5"/>
+		<menuitem action="act_open_hc_lab_test_component_default_values" name="Default Values" id="menu_hc_lab_component_test_default_values" parent="menu_hc_lab_config" sequence="6"/>
+        <menuitem action="act_open_hc_lab_test_organism" name="Micro-Organism" id="menu_hc_lab_test_organism" parent="menu_hc_lab_config" sequence="7"/>
+        <menuitem action="act_open_hc_lab_test_antibiotic" name="Antibiotic" id="menu_hc_lab_test_antibiotic" parent="menu_hc_lab_config" sequence="8"/>
+
+        <record id="hc_lab_test_order_view_tree" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.tree</field>
+            <field name="model">hc.lab.test.order</field>
+            <field name="arch" type="xml">
+                <tree string="Lab Investigation Order" create="false" colors="blue:state in ('draft','new');black:state in('progress');green:state in ('partially_done','fully_done');orange:state in ('dispatch','done');grey:state=='cancel'">
+                    <field name="order_no"/>
+                    <field name="patient_id"/>
+                    <field name="doctor_id"/>
+                    <field name="order_date"/>
+                    <field name="order_line_ids" widget="many2many_tags"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hc_lab_test_order_view_form" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.form</field>
+            <field name="model">hc.lab.test.order</field>
+            <field name="arch" type="xml">
+                <form string="Test Order">
+                <header>
+                    <button name="action_button_confirm" attrs="{'invisible':[('state' , '!=', 'draft')]}" string="Confirm" type="object"/>
+                    <button name="action_button_collect_sample" string="Collect Sample" type="object" attrs="{'invisible':[('state', '!=', 'new')]}" />
+                    <button name="action_lab_test_results_print" string="Print Results" type="object" attrs="{'invisible':[('state', 'not in',('result_entered','result_verified','dispatch'))]}" class="oe_highlight" />
+                    <button name="action_button_dispatch" attrs="{'invisible':[('state' , '!=', 'result_verified')]}" string="Dispatch Report" type="object" />
+                    <button name="make_invoice" string="Make Invoice" type="object" attrs="{'invisible':[('state', '!=', 'draft')]}" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,result_entered,result_verified,dispatch" statusbar_colors='{"new":"blue","result_entered":"black"}'/>
+                </header>
+                <sheet string="Test Order">
+                    <h1>
+                        <label string="Test Order" />
+                        <field name="order_no"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="doctor_id" />
+                        </group>
+                        <group>
+                            <field name="order_date"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Order Lines">
+                            <field name="order_line_ids" >
+                                <tree string="Test Order Lines" create="false" delete="false" colors="blue:state in ('draft','new');black:state in('sample_collected','sample_recollect');green:state in ('result_entered','result_verified');orange:state in('dispatch','done');grey:state=='cancel'">
+                                    <field name="test_id"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_id" />
+                                    <field name="product_uom_qty"/>
+                                    <field name="state"/>
+                                    <field name="sample_collected"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="test_order_line_view_tree" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.line.tree</field>
+            <field name="model">hc.lab.test.order.line</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <tree string="Test Orders Lines" delete="false" create="false" colors="blue:state in ('draft','new');black:state in('sample_collected','sample_recollect');green:state in ('result_entered','result_verified');orange:state in('dispatch','done');grey:state=='cancel'">
+                    <field name="id"/>
+                    <field name="patient_id"/>
+                    <field name="doctor_id"/>
+                    <field name="name" />
+                    <field name="order_date"/>
+                    <field name="state"/>
+                    <field name="note" />
+                </tree>
+            </field>
+        </record>
+        <record id="test_order_line_view_form" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.line.form</field>
+            <field name="model">hc.lab.test.order.line</field>
+            <field name="arch" type="xml">
+                <form string="Test Order Lines">
+                    <header>
+                        <button name="action_recollect_sample" attrs="{'invisible':[('state' , 'not in', ('sample_collected'))]}" string="Recollect Sample" type="object" />
+                        <button name="action_dispatch_report" attrs="{'invisible':[('state' , 'not in', ('result_entered','result_verified'))]}" string="Dispatch Report" type="object" />
+                        <field name="state" widget="statusbar" statusbar_visible="new,sample_collected,result_entered,result_verified,dispatch" statusbar_colors="{'new':'green','result_entered':'blue'}" />
+                    </header>
+                    <sheet>
+                        <label for="patient_id" string="Patient Name"/>
+                        <h2><field name="patient_id" /></h2>
+                        <group>
+                            <group>
+                                <field name="test_id"/>
+                                <field name="name"/>
+                                <field name="doctor_id"/>
+                            </group>
+                            <group>
+                                <field name="sample_collected" />
+                                <field name="sample_collected_by" attrs="{'invisible':[('sample_collected', '=', False)]}" />
+                            </group>
+                            <field name="test_type" invisible="1" />
+                        </group>
+                        <field name="line_result_ids" attrs="{'invisible':[('test_type', '!=', 'normal')]}">
+                            <tree string="Test Results" editable="bottom" delete="false" create="false">
+                                <field name="component_id"/>
+                                <field name="label"/>
+                                <field name="default_value_id" domain="[('component_id', '=', component_id)]" attrs="{'readonly':[('value_type', '=', 'num' )]}"/>
+                                <field name="value"/>
+                                <field name="unit"/>
+                                <field name="normal_range"/>
+                                <field name="value_type" invisible="1" />
+                                <field name="high_value" invisible="1"/>
+                                <field name="low_value" invisible="1"/>
+                                <field name="state" invisible="1"/>
+                            </tree>
+                        </field>
+                        <field name="culture_organism_ids" attrs="{'invisible':[('test_type', '!=', 'culture')]}" context="{'default_test_line_id': active_id}"  >
+                            <form string="Micro-Organism Culture">
+                                <group col="4">
+                                    <group>
+                                        <field name="test_line_id" readonly="1" />
+                                        <field name="organism_id" />
+                                    </group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="observation_period"/>
+                                    </group>
+                                </group>
+                                <field name="antibiotic_study_ids">
+                                    <tree string="Antibiotic" editable="bottom">
+                                        <field name="antibiotic_id" />
+                                        <field name="name"/>
+                                        <field name="sensitive"/>
+                                    </tree>
+                                </field>
+                            </form>
+                        </field>
+                        <group>
+                            <group>
+                                <field name="done_by" attrs="{'invisible':[('state', 'not in', ('result_entered','result_verified','dispatch'))]}" />
+                                <field name="done_date" attrs="{'invisible':[('state', 'not in', ('result_entered','result_verified','dispatch'))]}"/>
+                            </group>
+                            <group>
+                                <field name="result_verified" attrs="{'invisible':[('state', 'not in', ('result_entered', 'result_verified'))]}"/>
+                                <field name="verified_by" attrs="{'invisible':[('state', 'not in', ('result_verified', 'dispatch'))]}" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="hc_lab_test_order_line_culture_organism_view_tree" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.line.culture_organism.tree</field>
+            <field name="model">hc.lab.test.order.line.culture_organism</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <tree string="Culture Organism">
+                    <field name="test_line_id"/>
+                    <field name="organism_id"/>
+                    <field name="name"/>
+                    <field name="antibiotic_study_ids"/>
+                </tree>
+            </field>
+        </record>
+        <record id="hc_lab_test_order_line_culture_organism_view_form" model="ir.ui.view">
+            <field name="name">hc.lab.test.order.line.culture_organism.form</field>
+            <field name="model">hc.lab.test.order.line.culture_organism</field>
+            <field name="arch" type="xml">
+                <form string="Culture Organism">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="new,result_entered,result_verified,dispatch" />
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <group>
+                                <field name="test_line_id"/>
+                                <field name="organism_id" />
+                            </group>
+                            <group>
+                                <field name="name"/>
+                                <field name="observation_period"/>
+                            </group>
+                        </group>
+                        <field name="antibiotic_study_ids" >
+                            <tree string="Antibiotics" editable="bottom">
+                                <field name="antibiotic_id" />
+                                <field name="name"/>
+                                <field name="sensitive"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hc_lab_test_order_tree" model="ir.actions.act_window">
+            <field name="name">Investigation Order</field>
+            <field name="res_model">hc.lab.test.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="hc_lab_test_order_view_tree"/>
+        </record>
+
+        <menuitem name="Laboratory" parent="hc.menu_hc_root" id="menu_hc_lab" sequence="30"/>
+        <menuitem action="action_hc_lab_test_order_tree" name="Investigation Orders" id="menu_test_orders" parent="menu_hc_lab" sequence="1" />
+	</data>
+</openerp>

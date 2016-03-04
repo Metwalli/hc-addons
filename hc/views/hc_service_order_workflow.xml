@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="wkf_hc_service_order" model="workflow">
+            <field name="name">hc.service.order.basic</field>
+            <field name="osv">hc.service.order</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <!-- Activity -->
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="flow_start">True</field>
+            <field name="name">act_draft</field>
+        </record>
+        
+        <record id="act_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_cancel</field>
+            <field name="kind">stopall</field>
+            <field name="flow_stop">True</field>
+            <field name="action">action_cancel()</field>
+        </record>
+     
+        <record id="act_wait_confirm" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_wait_confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_wait()</field>
+        </record>
+
+        <record id="act_wait_invoice" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_wait_invoice</field>
+            <field name="kind">dummy</field>
+        </record>
+
+        <record id="act_cancel2" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_cancel2</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        
+        <record id="act_invoice" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_invoice</field>
+            <field name="kind">subflow</field>
+            <field name="subflow_id" search="[('name','=','account.invoice.basic')]"/>
+            <field name="action">action_create_invoice()</field>
+        </record>
+        <record id="act_invoice_end" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_invoice_end</field>
+            <field name="kind">function</field>
+            <field name="action">action_invoice_end()</field>
+            <field name="split_mode">OR</field>
+        </record>
+        <record id="act_router" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_router</field>
+            <field name="kind">function</field>
+            <field name="action">action_router()</field>
+            <field name="split_mode">OR</field>
+        </record>
+        <record id="act_invoice_except" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_invoice_except</field>
+            <field name="kind">function</field>
+            <field name="action">action_invoice_cancel()</field>
+        </record>
+        <record id="act_cancel3" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_cancel3</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        <record id="act_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_service_order"/>
+            <field name="name">act_done</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state': 'done'})</field>
+        </record>
+
+        <!-- Transistion -->
+
+        <record id="trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_draft_wait_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_wait_confirm"/>
+            <field name="signal">order_confirm</field>
+        </record>
+        <record id="trans_wait_confirm_wait_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_wait_confirm"/>
+            <field name="act_to" ref="act_wait_invoice"/>
+        </record>
+        <record id="trans_wait_invoice_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_wait_invoice"/>
+            <field name="act_to" ref="act_invoice"/>
+            <field name="signal">make_invoice</field>
+        </record>
+        <record id="trans_wait_invoice_cancel2" model="workflow.transition">
+            <field name="act_from" ref="act_wait_invoice"/>
+            <field name="act_to" ref="act_cancel2"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_wait_invoice_router" model="workflow.transition">
+            <field name="act_from" ref="act_wait_invoice"/>
+            <field name="act_to" ref="act_router"/>
+            <field name="condition">_check_is_free_follow_up()</field>
+        </record>
+        <record id="trans_invoice_router" model="workflow.transition">
+            <field name="act_from" ref="act_invoice"/>
+            <field name="act_to" ref="act_router"/>
+            <field name="signal">subflow.paid</field>
+        </record>
+        <record id="trans_draft_router" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_router"/>
+            <field name="condition">auto_order</field>
+        </record>
+        <record id="trans_router_invoice_end" model="workflow.transition">
+            <field name="act_from" ref="act_router"/>
+            <field name="act_to" ref="act_invoice_end"/>
+            <field name="condition">invoiced</field>
+        </record>
+        <record id="trans_invoice_invoice_exception" model="workflow.transition">
+            <field name="act_from" ref="act_invoice"/>
+            <field name="act_to" ref="act_invoice_except"/>
+            <field name="signal">subflow.cancel</field>
+        </record>
+         <record id="trans_invoice_exception_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_invoice_except"/>
+            <field name="act_to" ref="act_invoice"/>
+            <field name="signal">invoice_recreate</field>
+        </record>
+        <record id="trans_invoice_except_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_invoice_except"/>
+            <field name="act_to" ref="act_cancel3"/>
+            <field name="flow_stop">True</field>
+            <field name="signal">cancel</field>
+        </record>
+
+        <!-- Invoice Workflow -->
+
+        <record id="account.act_service_order" model="workflow.activity">
+            <field name="wkf_id" ref="account.wkf"/>
+            <field name="name">service_order</field>
+            <field name="kind">function</field>
+            <field name="action">action_create_service_order()</field>
+        </record>
+        <record id="account.trans_paid_service_order" model="workflow.transition">
+            <field name="act_from" ref="account.act_paid"/>
+            <field name="act_to" ref="account.act_service_order"/>
+            <field name="condition">invoice_contains_healthcare_service()</field>
+        </record>
+    </data>
+</openerp>

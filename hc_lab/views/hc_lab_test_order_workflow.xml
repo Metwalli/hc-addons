@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="wkf_hc_lab_test_order" model="workflow">
+            <field name="name">hc.lab.test.order.basic</field>
+            <field name="osv">hc.lab.test.order</field>
+            <field name="on_create">True</field>
+        </record>
+        <!-- Activity -->
+
+        <record id="act_lab_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="flow_start">True</field>
+            <field name="name">act_lab_draft</field>
+        </record>
+        <record id="act_lab_confirm" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_confirm()</field>
+        </record>
+        <record id="act_lab_cancel1" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_cancel1</field>
+            <field name="kind">stopall</field>
+            <field name="flow_stop">True</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        <record id="act_lab_new" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_new</field>
+            <field name="kind">dummy</field>
+        </record>
+        <record id="act_lab_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_cancel</field>
+            <field name="kind">stopall</field>
+            <field name="flow_stop">True</field>
+            <field name="action">action_cancel()</field>
+            <field name="signal_send">subflow.lab_cancel</field>
+        </record>
+        <record id="act_collect_sample" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_collect_sample</field>
+            <field name="kind">function</field>
+            <field name="action">action_collect_sample()</field>
+        </record>
+        <record id="act_lab_dispatch" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_dispatch</field>
+            <field name="kind">function</field>
+            <field name="action">action_dispatch()</field>
+        </record>
+        <record id="act_lab_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order"/>
+            <field name="name">act_lab_done</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_done()</field>
+            <field name="signal_send">subflow.lab_done</field>
+        </record>
+        <!-- Transistion -->
+
+        <record id="trans_draft_cancel1" model="workflow.transition">
+            <field name="act_from" ref="act_lab_draft"/>
+            <field name="act_to" ref="act_lab_cancel1"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_lab_draft_confirm" model="workflow.transition">
+            <field name="act_from" ref="act_lab_draft"/>
+            <field name="act_to" ref="act_lab_confirm"/>
+            <field name="signal">order_confirm</field>
+        </record>
+        <record id="trans_confirm_new" model="workflow.transition">
+            <field name="act_from" ref="act_lab_confirm"/>
+            <field name="act_to" ref="act_lab_new"/>
+        </record>
+        <record id="trans_draft_new" model="workflow.transition">
+            <field name="act_from" ref="act_lab_draft"/>
+            <field name="act_to" ref="act_lab_new"/>
+            <field name="condition">state == 'new'</field>
+        </record>
+        <record id="trans_new_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_lab_new"/>
+            <field name="act_to" ref="act_lab_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_new_collect_sample" model="workflow.transition">
+            <field name="act_from" ref="act_lab_new"/>
+            <field name="act_to" ref="act_collect_sample"/>
+            <field name="signal">collect_sample</field>
+            <field name="condition">True</field>
+        </record>
+        <record id="trans_collect_sample_dispatch" model="workflow.transition">
+            <field name="act_from" ref="act_collect_sample"/>
+            <field name="act_to" ref="act_lab_dispatch"/>
+            <field name="signal">order_dispatch</field>
+            <field name="condition">_check_all_lines_result_verified()</field>
+        </record>
+        <record id="trans_dispatch_done" model="workflow.transition">
+            <field name="act_from" ref="act_lab_dispatch"/>
+            <field name="act_to" ref="act_lab_done"/>
+            <field name="condition">True</field>
+        </record>
+
+        <!-- Order Lines workflow
+        <record id="wkf_hc_lab_test_order_line" model="workflow">
+            <field name="name">act_hc.lab.test.order.line.basic</field>
+            <field name="osv">hc.lab.test.order.line</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record id="lab_line_draft" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order_line"/>
+            <field name="flow_start">True</field>
+            <field name="name">lab_line_draft</field>
+        </record>
+        <record id="lab_line_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order_line"/>
+            <field name="name">lab_line_cancel</field>
+            <field name="kind">stopall</field>
+            <field name="flow_stop">True</field>
+        </record>
+        <record id="lab_line_new" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order_line"/>
+            <field name="name">lab_line_new</field>
+            <field name="flow_start">True</field>
+            <field name="kind">dummy</field>
+        </record>
+        <record id="lab_line_progress" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order_line"/>
+            <field name="name">lab_line_progress</field>
+            <field name="kind">dummy</field>
+        </record>
+        <record id="lab_line_result_entered" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_hc_lab_test_order_line"/>
+            <field name="name">lab_line_result_entered</field>
+            <field name="kind">function</field>
+            <field name="action">set_results_entered()</field>
+        </record>-->
+        <!--Transitions
+        <record id="trans_line_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="lab_line_draft"/>
+            <field name="act_to" ref="lab_line_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_line_draft_new" model="workflow.transition">
+            <field name="act_from" ref="lab_draft"/>
+            <field name="act_to" ref="lab_new"/>
+        </record>
+        <record id="trans_line_new_cancel" model="workflow.transition">
+            <field name="act_from" ref="lab_new"/>
+            <field name="act_to" ref="lab_cancel"/>
+            <field name="signal">cancel</field>
+        </record>
+        <record id="trans_line_new_progress" model="workflow.transition">
+            <field name="act_from" ref="lab_line_new"/>
+            <field name="act_to" ref="lab_line_progress"/>
+            <field name="signal">progress</field>
+            <field name="condition">state in ('sample_collected', 'sample_recollect')</field>
+        </record>
+        <record id="trans_line_progress_new" model="workflow.transition">
+            <field name="act_from" ref="lab_line_progress"/>
+            <field name="act_to" ref="lab_line_new"/>
+            <field name="condition">state =='new'</field>
+        </record>
+        <record id="trans_line_progress_result_entered" model="workflow.transition">
+            <field name="act_from" ref="lab_line_progress"/>
+            <field name="act_to" ref="lab_line_result_entered"/>
+            <field name="signal">confirm_results</field>
+            <field name="condition">state !='result_entered'</field>
+        </record>
+-->
+
+        <!-- service order workflow -->
+        <record id="hc.act_lab_order" model="workflow.activity">
+            <field name="wkf_id" ref="hc.wkf_hc_service_order"/>
+            <field name="name">act_lab_order</field>
+            <field name="kind">subflow</field>
+            <field name="subflow_id" search="[('name','=','hc.lab.test.order.basic')]"/>
+            <field name="action">action_create_lab_test_order()</field>
+        </record>
+        <record id="hc.act_lab_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="hc.wkf_hc_service_order"/>
+            <field name="name">act_lab_cancel</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">action_cancel()</field>
+        </record>
+        <record id="hc.trans_router_lab_order" model="workflow.transition">
+            <field name="act_from" ref="hc.act_router"/>
+            <field name="act_to" ref="hc.act_lab_order"/>
+            <field name="condition">_check_order_contains_lab_test()</field>
+        </record>
+        <record id="hc.trans_lab_order_done" model="workflow.transition">
+            <field name="act_from" ref="hc.act_lab_order"/>
+            <field name="act_to" ref="hc.act_done"/>
+            <field name="signal">subflow.lab_done</field>
+        </record>
+        <record id="hc.trans_lab_order_cancel" model="workflow.transition">
+            <field name="act_from" ref="hc.act_lab_order"/>
+            <field name="act_to" ref="hc.act_lab_cancel"/>
+            <field name="signal">subflow.lab_cancel</field>
+        </record>
+
+    </data>
+</openerp>
