@@ -79,8 +79,7 @@ class HCPatient(models.Model):
         vals['name'] = str(vals['first_name'] if 'first_name' in vals else self.first_name).replace('False', '')
         vals['name'] = vals['name'] + ' ' + str(vals['middle_name'] if 'middle_name' in vals else self.middle_name).replace("False", "")
         vals['name'] = vals['name'] + ' ' + str(vals['last_name'] if 'last_name' in vals else self.last_name).replace("False", "")
-        #if ('first_name' in vals and not vals['first_name']) or ('last_name' in vals and not(vals['last_name'])) or ('gender' in vals and not(vals['gender'])):
-            #raise osv.except_osv(_('Error!'), _("Please Enter Required Fields"))
+
         res = super(HCPatient, self).write(vals)
         return res
 
