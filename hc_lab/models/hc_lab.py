@@ -31,6 +31,15 @@ from openerp.exceptions import UserError
 #TODO: Create Profile
 #TODO: Create Formula
 
+class HCPatient(models.Model):
+    _inherit = 'hc.patient'
+
+    @api.multi
+    def action_view_results(self):
+        action = self.env['ir.actions.act_window'].for_xml_id('hc_lab', 'action_view_patient_lab_results')
+        action['domain'] = [('patient_id', '=', self.id)]
+        return action
+
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
