@@ -3,8 +3,6 @@
 	<data>
 
         <!-- Test Configuration -->
-
-
         <record id="product_lab_test_view_tree" model="ir.ui.view">
             <field name="name">product.product.lab_test.tree</field>
             <field name="model">product.product</field>
@@ -405,6 +403,7 @@
                                 <field name="default_value_id" domain="[('component_id', '=', component_id)]" attrs="{'readonly':[('value_type', '=', 'num' )]}"/>
                                 <field name="value"/>
                                 <field name="unit"/>
+                                <field name="num_value"/>
                                 <field name="normal_range"/>
                                 <field name="value_type" invisible="1" />
                                 <field name="high_value" invisible="1"/>
@@ -499,8 +498,49 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="hc_lab_test_order_view_tree"/>
         </record>
+         <record id="lab_test_order_line_action" model="ir.actions.act_window">
+             <field name="name">Test Line</field>
+             <field name="res_model">hc.lab.test.order.line</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="test_order_line_view_tree"/>
+         </record>
 
         <menuitem name="Laboratory" parent="hc.menu_hc_root" id="menu_hc_lab" sequence="30"/>
         <menuitem action="action_hc_lab_test_order_tree" name="Investigation Orders" id="menu_test_orders" parent="menu_hc_lab" sequence="1" />
+
+        <record id="hc_patient_button_results_view_form" model="ir.ui.view">
+            <field name="name">hc.patient.button_results.form</field>
+            <field name="model">hc.patient</field>
+            <field name="inherit_id" ref="hc.view_hc_patient_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[field[@name='photo']]" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" name="action_view_results" icon="fa-bar-chart-o"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hc_lab_test_order_line_results_patient_graph" model="ir.ui.view">
+             <field name="name">hc.lab.test.order.line.patient.graph</field>
+             <field name="model">hc.lab.test.order.line.results</field>
+             <field name="arch" type="xml">
+                 <graph type="bar">
+                     <field name="order_date" interval="day" type="row"/>
+                     <field name="component_id" type="col"/>
+                     <field name="num_value" type="measure"/>
+                 </graph>
+             </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_view_patient_lab_results">
+            <field name="name">LAB Results</field>
+            <field name="res_model">hc.lab.test.order.line.results</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="hc_lab_test_order_line_results_patient_graph"/>
+            <field name="domain">['&amp;',('value_type', '=', 'num'),('patient_id', 'IN', ids)]</field>
+        </record>
+
+
 	</data>
 </openerp>

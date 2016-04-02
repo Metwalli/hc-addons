@@ -47,7 +47,6 @@
 				</tree>
 			</field>
 		</record>
-
 		<record id="view_hc_patient_form" model="ir.ui.view">
 			<field name="name">hc.patient.form</field>
 			<field name="model">hc.patient</field>
@@ -57,16 +56,9 @@
 					<sheet>
 						<group col="2">
                             <field name="photo" widget="image" class="oe_left oe_avatar" nolabel="1" width="10%"/>
-                            <div>
-                                <group col="3">
-                                    <label for="first_name"/>
-                                    <label for="middle_name"/>
-                                    <label for="last_name"/>
-                                    <field name="first_name" nolabel="1"/>
-                                    <field name="middle_name" nolabel="1"/>
-                                    <field name="last_name" nolabel="1"/>
-                                </group>
-						    </div>
+                            <h1 width="50%">
+                                <field name="name"/>
+                            </h1>
                         </group>
                         <group col="4">
                             <group>
@@ -122,6 +114,7 @@
 				</search>
 			</field>
 		</record>
+
 		<record model="ir.actions.act_window" id="act_open_hc_patient_view">
 			<field name="name">Patients</field>
             <field name="type">ir.actions.act_window</field>

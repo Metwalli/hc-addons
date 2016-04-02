@@ -38,6 +38,7 @@
         'views/hc_service_order_view.xml',
         'views/hc_patient_sequence.xml',
         'views/hc_service_order_workflow.xml',
+        'report/hc_service_order_report_view.xml'
         #'security/hc_security.xml',
         #'security/ir.model.access.csv',
     ],

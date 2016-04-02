@@ -47,7 +47,7 @@ class HCServiceOrder(models.Model):
         for service_order in self:
             test_order = TestOrder.search([('service_order_id', '=', service_order.id)])
             for service_line in service_order.order_line_ids:
-                if service_line.product_id.service_type == 'lab_test' and service_line.state in ('confirmed', 'invoiced'):
+                if service_line.product_id.service_type == 'lab_test':
                     test_id = Test.get_test_id(service_line.product_id.id)
                     if not test_id:
                         raise UserError(_('Cannot find the Test, Please define Test for this product: "%s".') % \
@@ -62,14 +62,15 @@ class HCServiceOrder(models.Model):
                                 'order_date': fields.Datetime.now(),
                                 'state': 'new',
                             })
-                        test_line = TestLine.create({
-                            'service_line_id': service_line.id,
-                            'test_id': test_id.id,
-                            'test_order_id': test_order.id,
-                            'state': 'new',
-                        })
-                        if test_id.type == 'normal':
-                            test_line.action_create_result_components()
+                        for i in xrange(int(service_line.product_uom_qty)):
+                            test_line = TestLine.create({
+                                'service_line_id': service_line.id,
+                                'test_id': test_id.id,
+                                'test_order_id': test_order.id,
+                                'state': 'new',
+                            })
+                            if test_id.type == 'normal':
+                                test_line.action_create_result_components()
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

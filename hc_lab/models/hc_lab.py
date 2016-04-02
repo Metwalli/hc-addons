@@ -31,7 +31,6 @@ from openerp.exceptions import UserError
 #TODO: Create Profile
 #TODO: Create Formula
 
-
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
@@ -69,7 +68,7 @@ class HCLabTestSpecimen(models.Model):
 class HCLabTestSpecimenLine(models.Model):
     _name = "hc.lab.test.specimen.line"
 
-    test_id = fields.Many2one('hc.lab.test', 'Specimen', required=True)
+    test_id = fields.Many2one('hc.lab.test', 'Specimen', required=True, ondelete='cascade')
     specimen_id = fields.Many2one('hc.lab.test.specimen', 'Specimen', required=True)
     qty = fields.Integer('Quantity')
     uom_id = fields.Many2one('product.uom', 'Unit of Measure')
@@ -106,9 +105,6 @@ class HCLabTest(models.Model):
     category_id = fields.Many2one('product.category', related='product_id.categ_id', string='Category', readonly=True)
     separate_specimen = fields.Boolean('Separate Specimen')
 
-    _sql_constraints = [
-        ('product_uniq', 'unique(product_id)', 'The Product must be Unique'),
-    ]
 
     @api.multi
     def get_test_id(self, product_id):
@@ -137,7 +133,7 @@ class HCLabTestComponent(models.Model):
 class HCLabTestComponentNormalRange(models.Model):
     _name = "hc.lab.test.component.normal_range"
 
-    component_id = fields.Many2one('hc.lab.test.component', 'Component', required=True, domain=[('type', '=', 'num')])
+    component_id = fields.Many2one('hc.lab.test.component', 'Component', required=True, domain=[('type', '=', 'num')], ondelete='cascade')
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female'),
@@ -165,7 +161,10 @@ class HCLabTestComponentNormalRange(models.Model):
     @api.model
     def create(self, vals):
         if not vals['range_desc']:
-            vals['range_desc'] = str(vals['gender']) + ": " + str(vals['low_value']) + "-" + str(vals['high_value'])
+            unt = ''
+            if self.component_id.uom_id:
+                unt = self.component_id.uom_id.name
+            vals['range_desc'] = str(vals['gender']) + ": " + str(vals['low_value']) + "-" + str(vals['high_value']) + " " + unt
         return super(HCLabTestComponentNormalRange, self).create(vals)
 
 
@@ -173,7 +172,7 @@ class HCLabTestComponentDefaultValues(models.Model):
     _name = "hc.lab.test.component.default_values"
 
     name = fields.Char('Value', required=True)
-    component_id = fields.Many2one('hc.lab.test.component', 'Component', required=True, domain=[('type', '=', 'text')])
+    component_id = fields.Many2one('hc.lab.test.component', 'Component', required=True, domain=[('type', '=', 'text')], ondelete='cascade')
 
     _sql_constraints = [
         ('cmpt_name_uniq', 'unique(component_id,name)', 'The Name must be Unique for Component'),
@@ -310,7 +309,8 @@ class HCLabTestOrder(models.Model):
 
     @api.multi
     def action_lab_test_results_print(self):
-        return self.env['report'].get_action(self, 'hc_lab.report_lab_test_order_results2')
+        self.ensure_one()
+        return self.env['report'].get_action(self, 'hc_lab.report_test_order_result')
 
     @api.multi
     def button_dispatch(self):
@@ -558,7 +558,15 @@ class HCLabTestOrderLineCultureOrganismAntibioticStudy(models.Model):
 class HCLabTestOrderLineResults(models.Model):
     _name = "hc.lab.test.order.line.results"
 
+    @api.one
+    @api.depends('value')
+    def _compute_num_value(self):
+        if self.component_id.type == 'num' and self.value:
+            self.num_value = eval(self.value)
+
     test_line_id = fields.Many2one('hc.lab.test.order.line', 'Test Order', required=True, ondelete='cascade')
+    order_date = fields.Datetime(related='test_line_id.order_date', string='Order Date', store=True)
+    patient_id = fields.Many2one(related='test_line_id.patient_id', string='Patient', readonly=True)
     test_id = fields.Many2one('hc.lab.test', related= 'test_line_id.test_id', string='Test', readonly=True)
     component_id = fields.Many2one('hc.lab.test.component', 'Component', readonly=True, required=True, domain=[('test_id' , '=', 'test_id')], ondelete='cascade')
     label = fields.Char('Label', readonly=True)
@@ -571,7 +579,7 @@ class HCLabTestOrderLineResults(models.Model):
     unit = fields.Char('Unit', size=50, readonly=True)
     state = fields.Selection(related='test_line_id.state', string='State', readonly=True)
     value_type = fields.Selection(related='component_id.type', size=22, string='Result Type', readonly=True)
-
+    num_value = fields.Float('Num Results', compute='_compute_num_value', store=True)
     _sql_constraints = [
         ('test_line_id_component_id_uniq', 'unique(test_line_id,component_id)', 'The Component must be Unique in line'),
     ]

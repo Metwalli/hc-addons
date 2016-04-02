@@ -45,10 +45,12 @@ Laboratory can be found in the 'Open HIS' menu.
 	'sequence': 3,
     'data':[
         'views/hc_lab_view.xml',
-        #'views/hc_lab_report.xml',
+        'views/hc_lab_report.xml',
         'views/hc_lab_test_order_workflow.xml',
-        #'views/report_lab_test_order_results.xml',
+        'views/report_test_order_results.xml',
         'views/lab_order_sequence.xml',
+        #'report/hc_lab_test_order_report_view.xml',
+        #'report/hc_lab_test_order_line_report_view.xml',
         #'security/hc_lab_security.xml',
         #'security/ir.model.access.csv'
         ],

@@ -70,4 +70,5 @@ class HCConsultation(models.Model):
         ('product_doctor_uniq', 'unique (employee_id, product_id)', 'The Product must be unique per Doctor!' ),
     ]
 
+
 #TODO: when add doctor on doctors send is_doctor= True (Done)

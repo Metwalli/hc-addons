@@ -2,7 +2,28 @@
 <openerp>
 	<data>
         <!-- Services Orders -->
+        <record id="hc_service_order_line_view_tree" model="ir.ui.view">
+            <field name="name">hc.service.order.line.tree</field>
+            <field name="model">hc.service.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="HealthCare Service Line">
+                    <field name="order_id"/>
+                    <field name="product_id"/>
+                    <field name="name"/>
+                    <field name="product_uom_id" />
+                    <field name="product_uom_qty"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
 
+         <record id="hc_service_order_line_action" model="ir.actions.act_window">
+             <field name="name">Service Line</field>
+             <field name="res_model">hc.service.order.line</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="hc_service_order_line_view_tree"/>
+         </record>
         <record id="view_hc_service_order_tree" model="ir.ui.view">
             <field name="name">hc.service.order.tree</field>
             <field name="model">hc.service.order</field>
@@ -79,5 +100,6 @@
         </record>
 
         <menuitem action="action_hc_service_order_tree" id="menu_hc_service_order" parent="menu_hc_front_office_root" sequence="2"/>
+        <menuitem action="hc_service_order_line_action" id="menu_hc_service_order_line" parent="menu_hc_front_office_root" sequence="3"/>
 	</data>
 </openerp>

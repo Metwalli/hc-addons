@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="hc_lab_test_order_graph" model="ir.ui.view">
+         <field name="name">hc.lab.test.order.report.graph</field>
+         <field name="model">hc.lab.test.order.report</field>
+         <field name="arch" type="xml">
+             <graph string="Test Order Analysis" type="pivot" stacked="True">
+                 <field name="test_id" type="row"/>
+                 <field name="order_date" interval="month" type="col"/>
+                 <field name="order_count" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <record id="filter_hc_lab_test_order_report" model="ir.filters">
+        <field name="name">Test Funnel</field>
+        <field name="model_id">hc.lab.test.order.report</field>
+        <field name="domain">['&amp;', ('order_date','&lt;=', time.strftime('%%Y-12-31')), '&amp;', ('order_date','&gt;=',time.strftime('%%Y-01-01')), ('state','not in',('cancel',))]</field>
+        <field name="context">{'group_by': ['test_id'], 'measures': ['order_count']}</field>
+    </record>
+    <record id="filter_hc_lab_test_order_report_patient" model="ir.filters">
+        <field name="name">By Patient</field>
+        <field name="model_id">hc.lab.test.order.report</field>
+        <field name="context">{'group_by': ['order_date:month','patient_id']}</field>
+    </record>
+    <record id="filter_hc_lab_test_order_report_doctor" model="ir.filters">
+        <field name="name">By Doctor</field>
+        <field name="model_id">hc.lab.test.order.report</field>
+        <field name="context">{'group_by': ['order_date:month','doctor_id']}</field>
+    </record>
+
+    <record id="filter_hc_lab_test_order_report_test" model="ir.filters">
+        <field name="name">By Test</field>
+        <field name="model_id">hc.lab.test.order.report</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['order_date:month', 'test_id']}</field>
+    </record>
+
+    <record id="hc_lab_test_order_report_view_search" model="ir.ui.view">
+        <field name="name">hc.lab.test.order.report.search</field>
+        <field name="model">hc.lab.test.order.report</field>
+        <field name="arch" type="xml">
+            <search string="Laboratory Order Analysis">
+                <field name="order_date"/>
+                <filter string="This Year" name="year" invisible="1" domain="[('order_date','&lt;=', time.strftime('%%Y-12-31')),('order_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <filter name="Test" string="Test" domain="[('state','not in',('draft', 'cancel'))]"/>
+                <separator/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="test_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="Patient" name="Patient" context="{'group_by':'patient_id'}"/>
+                    <filter string="Doctor" name="Doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Test" name="Test" context="{'group_by':'test_id'}"/>
+                    <filter string="Status" context="{'group_by':'state'}"/>
+                    <separator/>
+                    <filter string="Order Month" context="{'group_by':'order_date:month'}" help="Ordered date of the Service order"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="lab_test_order_report_all_action" model="ir.actions.act_window">
+        <field name="name">Laboratory Order Analysis</field>
+        <field name="res_model">hc.lab.test.order.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="hc_lab_test_order_report_view_search"/>
+        <field name="view_id" ref="hc_lab_test_order_graph"/>
+        <field name="context">{'search_default_Services':1, 'group_by_no_leaf':1,'group_by':[]}</field>
+        <field name="help">This report performs analysis on your laboratory investigation orders group criteria (patient,test,doctor).</field>
+    </record>
+    <menuitem id="healthcare_reporting" name="HealthCare Reports" parent="hc.menu_hc_root" sequence="110"/>
+    <menuitem action="lab_test_order_report_all_action" id="lab_test_order_report_menu" parent="healthcare_reporting" sequence="10"/>
+
+</data>
+</openerp>

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 # /#############################################################################
 #
 #    Tech-Receptives Solutions Pvt. Ltd.
@@ -31,7 +31,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     patient_ids = fields.One2many('hc.patient', 'partner_id', 'Patients')
-
+    name = fields.Char('Name', size=255, required=True)
 #Todo: add latest Service Order in Patient view(Done)
 #Todo: make patients Menu the default when open Healthcare
 class HCPatient(models.Model):
@@ -68,26 +68,26 @@ class HCPatient(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name'] = vals['first_name'] + ' ' + str(vals['middle_name']).replace('False','') + ' ' + vals['last_name']
         vals['uhid'] = self.env['ir.sequence'].next_by_code('hc.patient')
         result = super(HCPatient, self).create(vals)
         return result
 
-    @api.multi
-    def write(self, vals):
+    #@api.multi
+    #def write(self, vals):
 
-        vals['name'] = str(vals['first_name'] if 'first_name' in vals else self.first_name).replace('False', '')
-        vals['name'] = vals['name'] + ' ' + str(vals['middle_name'] if 'middle_name' in vals else self.middle_name).replace("False", "")
-        vals['name'] = vals['name'] + ' ' + str(vals['last_name'] if 'last_name' in vals else self.last_name).replace("False", "")
+#        vals['name'] = str(vals['first_name'] if 'first_name' in vals else self.first_name).replace('False', '')
+#        vals['name'] = vals['name'] + ' ' + str(vals['middle_name'] if 'middle_name' in vals else self.middle_name).replace("False", "")
+ #       vals['name'] = vals['name'] + ' ' + str(vals['last_name'] if 'last_name' in vals else self.last_name).replace("False", "")
 
-        res = super(HCPatient, self).write(vals)
-        return res
+  #      res = super(HCPatient, self).write(vals)
+   #     return res
 
-    first_name = fields.Char('First Name', size=30, required=True, translate=True)
-    middle_name = fields.Char('Middle Name', size=30,  translate=True)
-    last_name = fields.Char('Last Name', size=30, required=True, translate=True)
-    partner_id = fields.Many2one('res.partner', 'Related Partner', translate=True, required=True, ondelete='cascade',
+    #first_name = fields.Char('First Name', size=30, required=True, translate=True)
+    #middle_name = fields.Char('Middle Name', size=30,  translate=True)
+    #last_name = fields.Char('Last Name', size=30, required=True, translate=True)
+    partner_id = fields.Many2one('res.partner', 'Related Partner', required=True, ondelete='cascade',
                                   help='Partner-related data of the patient')
+    related_name = fields.Char(related='partner_id.name', string='Patient Name')
     photo = fields.Binary(string='Picture')
     gender = fields.Selection([('Male', 'Male'), ('Female', 'Female'),('Unknown', 'Unknown'), ], string='Gender', required=True)
     blood_type = fields.Selection([('A', 'A'), ('B', 'B'), ('AB', 'AB'), ('O', 'O'), ], string='Blood Type')
@@ -113,14 +113,22 @@ class HCPatient(models.Model):
                                         ('u', 'Unknown')
                                         ],string='Marital Status', sort=False)
     dod = fields.Datetime(string='Date of Death', readonly=True, states={'deceased': [('readonly', False)]})
-    uhid = fields.Char(string='UHID', readonly=True,
-                        help='Patient Identifier provided by the Healthcare Center')
+    uhid = fields.Char(string='UHID', size=22, readonly=True, help='Patient Identifier provided by the Healthcare Center')
+
+    @api.one
+    @api.constrains('dob')
+    def _check_dob(self):
+        if fields.Date.from_string(self.dob) > fields.Date.from_string(fields.Date.today()):
+            self.dob = fields.date.today()
+            raise UserError(_('Date Of Birth is Wrong'))
 
     @api.multi
     @api.onchange('state')
     def onchange_state(self):
         if(self.state == 'deceased'):
             return self.update({'dod': fields.Datetime.now()})
+        else:
+            return self.update({'dod': False})
 
     @api.multi
     def get_patient(self, partner_id):

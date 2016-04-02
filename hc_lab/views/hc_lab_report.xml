@@ -2,12 +2,14 @@
 <openerp>
     <data>
           <report
-            id="report_lab_test_order_results"
+            id="test_order_results"
             model="hc.lab.test.order"
             string="Results Report"
             report_type="qweb-pdf"
-            name="hc_lab.report_lab_test_order_results2"
-            file="hc_lab.report_lab_test_order_results"
+            name="hc_lab.report_test_order_result"
+            file="hc_lab.report_test_order_result"
+            attachment_use="True"
+            attachment="(object.state in ('result_entered','result_verified','dispatch')) and ('LAB'+(object.order_no or '').replace('/','')+'.pdf')"
         />
     </data>
 </openerp>
