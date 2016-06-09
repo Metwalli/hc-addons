@@ -313,7 +313,7 @@
             <field name="name">hc.lab.test.order.form</field>
             <field name="model">hc.lab.test.order</field>
             <field name="arch" type="xml">
-                <form string="Test Order">
+                <form string="Test Order" create="false">
                 <header>
                     <button name="action_button_confirm" attrs="{'invisible':[('state' , '!=', 'draft')]}" string="Confirm" type="object"/>
                     <button name="action_button_collect_sample" string="Collect Sample" type="object" attrs="{'invisible':[('state', '!=', 'new')]}" />
@@ -323,13 +323,15 @@
                     <field name="state" widget="statusbar" nolabel="1" statusbar_visible="new,result_entered,result_verified,dispatch" statusbar_colors='{"new":"blue","result_entered":"black"}'/>
                 </header>
                 <sheet string="Test Order">
-                    <h1>
-                        <label string="Test Order" />
-                        <field name="order_no"/>
-                    </h1>
+                    <group col="2">
+                        <field name="patient_photo" widget="image" class="oe_left oe_avatar" nolabel="1" width="10%"/>
+                        <h1 width="50%">
+                            <field name="patient_id"/>
+                        </h1>
+                    </group>
                     <group>
                         <group>
-                            <field name="patient_id"/>
+                            <field name="order_no"/>
                             <field name="doctor_id" />
                         </group>
                         <group>
@@ -342,8 +344,6 @@
                                 <tree string="Test Order Lines" create="false" delete="false" colors="blue:state in ('draft','new');black:state in('sample_collected','sample_recollect');green:state in ('result_entered','result_verified');orange:state in('dispatch','done');grey:state=='cancel'">
                                     <field name="test_id"/>
                                     <field name="name"/>
-                                    <field name="product_uom_id" />
-                                    <field name="product_uom_qty"/>
                                     <field name="state"/>
                                     <field name="sample_collected"/>
                                 </tree>
@@ -403,7 +403,7 @@
                                 <field name="default_value_id" domain="[('component_id', '=', component_id)]" attrs="{'readonly':[('value_type', '=', 'num' )]}"/>
                                 <field name="value"/>
                                 <field name="unit"/>
-                                <field name="num_value"/>
+                                <field name="num_value" invisible="1"/>
                                 <field name="normal_range"/>
                                 <field name="value_type" invisible="1" />
                                 <field name="high_value" invisible="1"/>

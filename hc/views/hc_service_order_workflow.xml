@@ -50,13 +50,6 @@
             <field name="subflow_id" search="[('name','=','account.invoice.basic')]"/>
             <field name="action">action_create_invoice()</field>
         </record>
-        <record id="act_invoice_end" model="workflow.activity">
-            <field name="wkf_id" ref="wkf_hc_service_order"/>
-            <field name="name">act_invoice_end</field>
-            <field name="kind">function</field>
-            <field name="action">action_invoice_end()</field>
-            <field name="split_mode">OR</field>
-        </record>
         <record id="act_router" model="workflow.activity">
             <field name="wkf_id" ref="wkf_hc_service_order"/>
             <field name="name">act_router</field>
@@ -64,9 +57,9 @@
             <field name="action">action_router()</field>
             <field name="split_mode">OR</field>
         </record>
-        <record id="act_invoice_except" model="workflow.activity">
+        <record id="act_invoice_exception" model="workflow.activity">
             <field name="wkf_id" ref="wkf_hc_service_order"/>
-            <field name="name">act_invoice_except</field>
+            <field name="name">act_invoice_exception</field>
             <field name="kind">function</field>
             <field name="action">action_invoice_cancel()</field>
         </record>
@@ -111,38 +104,33 @@
             <field name="act_to" ref="act_cancel2"/>
             <field name="signal">cancel</field>
         </record>
-        <record id="trans_wait_invoice_router" model="workflow.transition">
-            <field name="act_from" ref="act_wait_invoice"/>
-            <field name="act_to" ref="act_router"/>
-            <field name="condition">_check_is_free_follow_up()</field>
-        </record>
         <record id="trans_invoice_router" model="workflow.transition">
             <field name="act_from" ref="act_invoice"/>
             <field name="act_to" ref="act_router"/>
             <field name="signal">subflow.paid</field>
+        </record>
+        <record id="trans_router_wait_invoice" model="workflow.transition">
+            <field name="act_from" ref="act_router"/>
+            <field name="act_to" ref="act_wait_invoice"/>
+            <field name="condition">_check_line_exception()</field>
         </record>
         <record id="trans_draft_router" model="workflow.transition">
             <field name="act_from" ref="act_draft"/>
             <field name="act_to" ref="act_router"/>
             <field name="condition">auto_order</field>
         </record>
-        <record id="trans_router_invoice_end" model="workflow.transition">
-            <field name="act_from" ref="act_router"/>
-            <field name="act_to" ref="act_invoice_end"/>
-            <field name="condition">invoiced</field>
-        </record>
         <record id="trans_invoice_invoice_exception" model="workflow.transition">
             <field name="act_from" ref="act_invoice"/>
-            <field name="act_to" ref="act_invoice_except"/>
+            <field name="act_to" ref="act_invoice_exception"/>
             <field name="signal">subflow.cancel</field>
         </record>
          <record id="trans_invoice_exception_invoice" model="workflow.transition">
-            <field name="act_from" ref="act_invoice_except"/>
+            <field name="act_from" ref="act_invoice_exception"/>
             <field name="act_to" ref="act_invoice"/>
             <field name="signal">invoice_recreate</field>
         </record>
-        <record id="trans_invoice_except_cancel" model="workflow.transition">
-            <field name="act_from" ref="act_invoice_except"/>
+        <record id="trans_invoice_exception_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_invoice_exception"/>
             <field name="act_to" ref="act_cancel3"/>
             <field name="flow_stop">True</field>
             <field name="signal">cancel</field>

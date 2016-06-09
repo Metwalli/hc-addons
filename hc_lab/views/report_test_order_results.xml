@@ -30,7 +30,7 @@
                             <th></th>
                             <th>Label</th>
                             <th class="text-right">Value</th>
-                            <th>       </th>
+                            <th> Unit </th>
                             <th>Normal Range</th>
                         </tr>
                     </thead>
@@ -48,13 +48,7 @@
                                     </td>
                                     <td><span t-field="lr.unit"/></td>
                                     <td>
-                                        <t t-foreach="lr.component_id.normal_range_ids" t-as="nr">
-                                            <div t-if="(nr.gender==o.patient_id.gender or nr.gender=='all') and ((o.patient_id.age between nr.age_from and nr.age_to) or o.patient_id.age=0)">
-                                                <span t-field="nr.low_value"/><span>-</span>
-                                                <span t-field="nr.high_value"/>
-                                                <span t-field="unit"/>
-                                            </div>
-                                        </t>
+                                        <span t-field="lr.normal_range"/>
                                     </td>
                                 </tr>
                             </tr>

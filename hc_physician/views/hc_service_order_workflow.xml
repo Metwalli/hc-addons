@@ -16,6 +16,11 @@
             <field name="kind">function</field>
             <field name="action">action_create_consultation_order()</field>
         </record>
+        <record id="hc.trans_wait_invoice_consultation_order" model="workflow.transition">
+            <field name="act_from" ref="hc.act_wait_invoice"/>
+            <field name="act_to" ref="hc.act_consultation_order"/>
+            <field name="condition">_check_is_free_follow_up()</field>
+        </record>
         <record id="hc.trans_router_consultation_order" model="workflow.transition">
             <field name="act_from" ref="hc.act_router"/>
             <field name="act_to" ref="hc.act_consultation_order"/>

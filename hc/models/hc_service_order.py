@@ -49,6 +49,7 @@ class HCServiceOrder(models.Model):
     name = fields.Char('Description', translate=True, required=True, default= 'draft order', copy=False, readonly=True, states={'draft': [('readonly', False)]})
     order_no = fields.Char('Order No', translate=True, size=20, readonly=True)
     patient_id = fields.Many2one('hc.patient', 'Patient Name', required=True, readonly=True, states={'draft':[('readonly', False)]})
+    patient_photo = fields.Binary(related= 'patient_id.photo', string='Patient Photo', readonly=True)
     doctor_id = fields.Many2one('resource.resource', 'Doctor', domain=[('is_doctor', '=', True)], readonly=True, states={'draft': [('readonly', False)]})
     order_date = fields.Datetime('Order Date', readonly=True)
     order_line_ids = fields.One2many('hc.service.order.line', 'order_id', string='Order Lines', readonly=True, states={'draft':[('readonly', False)]})
@@ -60,7 +61,7 @@ class HCServiceOrder(models.Model):
         ('confirmed', 'Confirmed'),
         ('to_invoice', 'To Invoice'),
         ('progress', 'In Progress'),
-        ('invoice_except', 'Invoice Exception'),
+        ('invoice_exception', 'Invoice Exception'),
         ('done', 'Done'),
         ('cancel', 'Cancel')
     ], string='Status', default= 'draft')
@@ -79,6 +80,7 @@ class HCServiceOrder(models.Model):
 
     @api.multi
     def _check_is_free_follow_up(self):
+        self.ensure_one()
         rec = self.get_consultation_follow_up()
         if rec:
             if rec['discount'] == 100:
@@ -86,6 +88,13 @@ class HCServiceOrder(models.Model):
         else:
             return False
 
+    @api.multi
+    def _check_line_exception(self):
+        self.ensure_one()
+        for line in self.order_line_ids:
+            if line.state == 'exception':
+                return True
+        return False
 
     @api.model
     def create(self, vals):
@@ -131,20 +140,15 @@ class HCServiceOrder(models.Model):
         for line in self.order_line_ids:
             if line.state != 'cancel':
                 line.action_set_state('exception')
-            self.write({'state': 'invoice_except'})
+        self.write({'state': 'invoice_exception'})
         return True
-
-    @api.multi
-    def action_invoice_end(self):
-        self.ensure_one()
-        self.write({'state': 'progress'})
 
     @api.multi
     def action_router(self):
         self.ensure_one()
         for line in self.order_line_ids:
-            if line.state != 'cancel':
-                line.action_set_state('invoiced')
+            if not line.invoiced and line.state != 'cancel':
+                line.action_set_state('exception')
         return True
 
     @api.multi
@@ -155,8 +159,7 @@ class HCServiceOrder(models.Model):
                 raise UserError(_('Cannot cancel this Service order! First cancel all invoices attached to this Service order.'))
             inv.signal_workflow('invoice_cancel')
         for line in self.order_line_ids:
-            if line.state != 'cancel':
-                line.action_set_state('cancel')
+            line.action_set_state('cancel')
         self.write({'state': 'cancel'})
         return True
 
@@ -206,9 +209,10 @@ class HCServiceOrder(models.Model):
             else:
                 inv_id = draft_invoice
             for line in self.order_line_ids:
-                if (not line.invoice_line_ids) or(line.invoice_line_ids and line.invoice_line_ids.invoice_id.state == 'cancel'):
-                    line.action_create_invoice_line(inv_id)
-            self.write({'state': 'to_invoice'})
+                if line.state != 'cancel':
+                    if not any(il.invoice_id.state != 'cancel' for il in line.invoice_line_ids):
+                        line.action_create_invoice_line(inv_id)
+            self.write({'state': 'progress'})
 
     @api.multi
     def action_view_invoice(self):
@@ -288,7 +292,6 @@ class HCServiceOrderLine(models.Model):
 
     @api.multi
     def _compute_line_invoiced(self):
-        res= {}
         InvoiceLine = self.env['account.invoice.line']
         for line in self:
             inv_line = InvoiceLine.search([('order_line_id', '=', line.id), ('invoice_id.state', '=', 'paid')])
@@ -296,7 +299,6 @@ class HCServiceOrderLine(models.Model):
                 line.invoiced = True
             else:
                 line.invoiced = False
-        return res
 
     order_id = fields.Many2one('hc.service.order', 'Service Order', readonly=True, select=True, states={'draft': [('readonly', False)]})
     patient_id = fields.Many2one('hc.patient', related='order_id.patient_id', string='Patient', readonly=True)
@@ -355,16 +357,16 @@ class HCServiceOrderLine(models.Model):
            :return: dict of values to create() the invoice line
         """
         res = {}
-        account = self.product_id.property_account_income_id or self.product_id.categ_id.property_account_income_categ_id
-        if not account:
+        account_id = self.product_id.property_account_income_id.id or self.product_id.categ_id.property_account_income_categ_id.id
+        if not account_id:
             raise UserError(_('Please define income account for this product: "%s" (id:%d).') % \
                         (self.product_id.name, self.product_id.id,))
-        price_unit = self.env['product.uom']._compute_price(self.product_id.uom_id.id, False, self.product_uom_id.id)
+        price_unit = self.product_id.lst_price
         res = {
             'invoice_id': inv_id.id,
             'name': self.name,
             'origin': self.order_id.name,
-            'account_id': account.id,
+            'account_id': account_id,
             'uom_id': self.product_uom_id.id,
             'quantity': self.product_uom_qty,
             'price_unit': price_unit,

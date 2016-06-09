@@ -61,11 +61,13 @@
                 <field name="doctor_id"/>
                 <field name="product_id"/>
                 <field name="user_id"/>
+                <field name="categ_id"/>
                 <group expand="1" string="Group By">
                     <filter string="User" name="User" context="{'group_by':'user_id'}"/>
                     <filter string="Patient" name="Patient" context="{'group_by':'patient_id'}"/>
                     <filter string="Doctor" name="Doctor" context="{'group_by':'doctor_id'}"/>
                     <filter string="Service Type" name="Service Type" context="{'group_by':'service_type'}"/>
+                    <filter string="Category" name="Category" context="{'group_by':'categ_id'}"/>
                     <filter string="Products" name="Product" context="{'group_by':'product_id'}"/>
                     <filter string="Status" context="{'group_by':'state'}"/>
                     <separator/>
@@ -79,9 +81,10 @@
         <field name="name">HealthCare Service Order Analysis</field>
         <field name="res_model">hc.service.order.report</field>
         <field name="view_type">form</field>
-        <field name="view_mode">graph</field>
+        <field name="view_mode">graph,pivot</field>
         <field name="search_view_id" ref="view_hc_service_order_report_search"/>
         <field name="view_id" ref="view_hc_service_order_graph"/>
+        <field name="domain">[('product_id.type', '=', 'service'),('service_type', 'in', ('consultation','lab_test','rad_test','procedure','operation','ward'))]</field>
         <field name="context">{'search_default_Services':1, 'group_by_no_leaf':1,'group_by':[]}</field>
         <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
     </record>

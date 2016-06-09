@@ -1,24 +1,23 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hc_patient_reg,hc.patient,model_hc_patient,base.group_hc_patient_registration,1,1,1,0
-access_res_partner_hc_config,res_partner hc_config,base.model_res_partner,base.group_hc_patient_registration,1,1,1,0
-access_hc_patient_view,service_order hc.patient,model_hc_patient,base.group_hc_service_order,1,0,0,0
-access_res_partner_hc_config,hc_service_order res_partner,base.model_res_partner,base.group_hc_service_order,1,0,0,0
-access_service_order,hc.service.order,model_hc_service_order,base.group_hc_service_order,1,1,1,0
-access_service_order_line,hc.service.order.line,model_hc_service_order_line,base.group_hc_service_order,1,1,1,0
-access_hc_consultation_view,service_order hc.consultation,model_hc_consultation,base.group_hc_service_order,1,0,0,0
-access_product_uom_hc_config,product.uom.hc_config,product.model_product_uom,base.group_hc_admin,1,1,1,1
-access_product_pricelist_hc_config,product.pricelist.hc_config,product.model_product_pricelist,base.group_hc_admin,1,1,1,1
-access_account_account_hc_config,account_account hc_config,account.model_account_account,base.group_hc_admin,1,1,1,0
-access_product_uom_categ_hc_config,product.uom.categ hc_config,product.model_product_uom_categ,base.group_hc_admin,1,1,1,1
-access_product_ul_hc_config,product.ul hc_config,product.model_product_ul,base.group_hc_admin,1,1,1,1
-access_product_category_hc_config,product.category hc_config,product.model_product_category,base.group_hc_admin,1,1,1,1
-access_product_supplierinfo_hc_config,product.supplierinfo hc_config,product.model_product_supplierinfo,base.group_hc_admin,1,1,1,1
-access_pricelist_partnerinfo_hc_config,pricelist.partnerinfo hc_config,product.model_pricelist_partnerinfo,base.group_hc_admin,1,1,1,1
-access_product_price_type_hc_config,product.price.type hc_config,product.model_product_price_type,base.group_hc_admin,1,1,1,1
-access_product_pricelist_type_hc_config,product.pricelist.type hc_config,product.model_product_pricelist_type,base.group_hc_admin,1,1,1,1
-access_product_pricelist_version_hc_config,product.pricelist.version hc_config,product.model_product_pricelist_version,base.group_hc_admin,1,1,1,1
-access_consultation_hc_config,hc.consultation,model_hc_consultation,base.group_hc_admin,1,1,1,1
-access_hc_consultation_visiting_plan,hc.consultation.visiting.plan,model_hc_consultation_visiting_plan,base.group_hc_admin,1,1,1,1
-access_hc_consultation_visiting_plan_sequence,hc.consultation.visiting.plan.sequence,model_hc_consultation_visiting_plan_sequence,base.group_hc_admin,1,1,1,1
+access_hc_patient_reg,hc.patient,model_hc_patient,group_hc_patient_registration,1,1,1,0
+access_res_partner_hc_config,res_partner hc_config,hc.model_res_partner,group_hc_patient_registration,1,1,1,0
+access_hc_patient_view,service_order hc.patient,model_hc_patient,group_hc_service_order,1,0,0,0
+access_res_partner_hc_config,hc_service_order res_partner,hc.model_res_partner,group_hc_service_order,1,0,0,0
+access_service_order,hc.service.order,model_hc_service_order,group_hc_service_order,1,1,1,0
+access_service_order_line,hc.service.order.line,model_hc_service_order_line,group_hc_service_order,1,1,1,0
+access_hc_consultation_view,service_order hc.consultation,model_hc_consultation,group_hc_service_order,1,0,0,0
+access_product_uom_hc_config,product.uom.hc_config,product.model_product_uom,group_hc_admin,1,1,1,1
+access_product_pricelist_hc_config,product.pricelist.hc_config,product.model_product_pricelist,group_hc_admin,1,1,1,1
+access_account_account_hc_config,account_account hc_config,account.model_account_account,group_hc_admin,1,1,1,0
+access_product_uom_categ_hc_config,product.uom.categ hc_config,product.model_product_uom_categ,group_hc_admin,1,1,1,1
+access_product_category_hc_config,product.category hc_config,product.model_product_category,group_hc_admin,1,1,1,1
+access_product_supplierinfo_hc_config,product.supplierinfo hc_config,product.model_product_supplierinfo,group_hc_admin,1,1,1,1
+access_pricelist_partnerinfo_hc_config,pricelist.partnerinfo hc_config,product.model_pricelist_partnerinfo,group_hc_admin,1,1,1,1
+access_product_price_type_hc_config,product.price.type hc_config,product.model_product_price_type,group_hc_admin,1,1,1,1
+access_product_pricelist_type_hc_config,product.pricelist.type hc_config,product.model_product_pricelist_type,group_hc_admin,1,1,1,1
+access_product_pricelist_version_hc_config,product.pricelist.version hc_config,product.model_product_pricelist_version,group_hc_admin,1,1,1,1
+access_consultation_hc_config,hc.consultation,model_hc_consultation,group_hc_admin,1,1,1,1
+access_hc_consultation_visiting_plan,hc.consultation.visiting.plan,model_hc_consultation_visiting_plan,group_hc_admin,1,1,1,1
+access_hc_consultation_visiting_plan_sequence,hc.consultation.visiting.plan.sequence,model_hc_consultation_visiting_plan_sequence,group_hc_admin,1,1,1,1
 
 

@@ -33,6 +33,7 @@ class HCServiceOrderReport(models.Model):
     order_date = fields.Datetime('Date Order', readonly=True)
     user_id = fields.Many2one('res.users', 'User ID', readonly=True)
     product_id = fields.Many2one('product.product', 'Product', readonly=True)
+    categ_id = fields.Many2one('product.category', string='Category', readonly=True)
     product_uom_id = fields.Many2one('product.uom', 'Unit of Measure', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -67,6 +68,7 @@ class HCServiceOrderReport(models.Model):
             order_line.product_uom_id AS product_uom_id,
             service_order.state AS state,
             product.service_type as service_type,
+            product_tmpl.categ_id AS categ_id,
             sum(order_line.product_uom_qty) AS count_all
         """
         return select_str
@@ -78,6 +80,8 @@ class HCServiceOrderReport(models.Model):
             resource_resource as resource,
             hc_service_order_line as order_line,
             product_product as product,
+            product_template as product_tmpl,
+            product_category as product_category,
             product_uom as units
         """
         return from_str
@@ -88,6 +92,8 @@ class HCServiceOrderReport(models.Model):
             service_order.doctor_id = resource.id AND
             order_line.order_id = service_order.id AND
             order_line.product_id = product.id AND
+            product.product_tmpl_id = product_tmpl.id AND
+            product_tmpl.categ_id = product_category.id AND
             order_line.product_uom_id = units.id
         """
         return where_str
@@ -100,6 +106,7 @@ class HCServiceOrderReport(models.Model):
             service_order.order_date,
             service_order.user_id,
             order_line.product_id,
+            product_tmpl.categ_id,
             order_line.product_uom_id,
             service_order.state,
             product.service_type
