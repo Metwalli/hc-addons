@@ -21,7 +21,8 @@ Request Medical Services Order to any patient, the medical service order may be 
 ![](hc/static/description/service_order.png)
 
 ## Physician Module
-Consultation Work List
+view Consultation Request, Case sheet, Drug Orders, Examination Order, Add Diagnosis and view Patient Folder.
+### Consultation Work List
 
 ![](hc_physician/static/description/physician.png)
 
@@ -87,7 +88,7 @@ Antibiotic Definition.
 Manage all Test Requisition start of Sample Collection to Dispatch Report.
 Entering Results and verified it, and Print report of results.
 
-view Consultation Request, Case sheet, Drug Orders, Examination Order, Add Diagnosis and view Patient Folder.
+
 -	Laboratory: Test Definition, view Laboratory Test Request, Enter Results and Print Results Report.
 -	Radiology: Test Definition, view Radiology Test Request, Writing Reports
 
