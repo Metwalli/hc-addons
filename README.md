@@ -87,8 +87,3 @@ Antibiotic Definition.
 
 Manage all Test Requisition start of Sample Collection to Dispatch Report.
 Entering Results and verified it, and Print report of results.
-
-
--	Laboratory: Test Definition, view Laboratory Test Request, Enter Results and Print Results Report.
--	Radiology: Test Definition, view Radiology Test Request, Writing Reports
-
